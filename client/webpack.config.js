@@ -26,7 +26,7 @@ module.exports = () => {
         chunks: ['install'],
       }),
       new WebpackPwaManifest({
-        name: 'Your Text Editor App',
+        name: 'Just Another Text Editor',
         short_name: 'Text Editor',
         description: 'A Progressive Web Text Editor',
         background_color: '#ffffff',
@@ -34,7 +34,7 @@ module.exports = () => {
         start_url: '/',
         icons: [
           {
-            src: path.resolve('src/assets/logo.png'),
+            src: path.resolve('src/images/logo.png'),
             sizes: [96, 128, 192, 256, 384, 512],
             destination: path.join('assets', 'icons'),
           },

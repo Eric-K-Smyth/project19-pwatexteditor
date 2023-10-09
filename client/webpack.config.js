@@ -6,32 +6,41 @@ const { InjectManifest } = require('workbox-webpack-plugin');
 module.exports = () => {
   return {
     mode: 'development',
+    // Entry point for files
     entry: {
       main: './src/js/index.js',
-      install: './src/js/install.js'
+      install: './src/js/install.js',
+      editor: './src/js/editor.js'
     },
+    // Output for our bundles
     output: {
       filename: '[name].bundle.js',
       path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
+      // Webpack plugin that generates our html file and injects our bundles. 
       new HtmlWebpackPlugin({
         template: './index.html',
-        filename: 'index.html',
-        chunks: ['main'],
+        title: 'JATE'
       }),
-      new HtmlWebpackPlugin({
-        template: './src/js/install.js',
-        filename: 'install.html',
-        chunks: ['install'],
+     
+      // Injects our custom service worker
+      new InjectManifest({
+        swSrc: './src-sw.js',
+        swDest: 'sw.js',
       }),
+
+      // Creates a manifest.json file.
       new WebpackPwaManifest({
-        name: 'Just Another Text Editor',
+        fingerprints: false,
+        inject: true,
+        name: 'Just another text editor',
         short_name: 'Text Editor',
-        description: 'A Progressive Web Text Editor',
-        background_color: '#ffffff',
-        theme_color: '#000000',
-        start_url: '/',
+        description: 'A Progressive text editor!',
+        background_color: '#225ca3',
+        theme_color: '#225ca3',
+        start_url: './',
+        publicPath: './',
         icons: [
           {
             src: path.resolve('src/images/logo.png'),
@@ -39,10 +48,6 @@ module.exports = () => {
             destination: path.join('assets', 'icons'),
           },
         ],
-      }),
-      new InjectManifest({
-        swSrc: './src-sw.js',
-        swDest: 'src-sw.js',
       }),
     ],
 

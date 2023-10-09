@@ -11,22 +11,52 @@ const initdb = async () =>
       console.log('jate database created');
     },
   });
-// Method to add content to the database
+// Define the putDb function to store content
 export const putDb = async (content) => {
-  const db = await dbPromise;
-  const tx = db.transaction('jate', 'readwrite');
-  const store = tx.objectStore('jate');
-  const newItem = { content }; 
-  await store.add(newItem);
-  await tx.done;
+  console.log('Storing content in the database');
+
+  try {
+    // Create a connection to the database and specify the version to use
+    const jateDB = await openDB('jate', 1);
+
+    // Create a new transaction and specify read/write access
+    const transaction = jateDB.transaction('jate', 'readwrite');
+
+    // Access the object store
+    const store = transaction.objectStore('jate');
+
+    // Define the data to be stored
+    const data = { content };
+
+    // Use the put method to store the data
+    const key = await store.put(data);
+
+    console.log(`Content stored with key: ${key}`);
+  } catch (error) {
+    console.error('Error storing content:', error);
+  }
 };
 
-// Method to get all content from the database
+// Export a function we will use to GET to the database.
 export const getDb = async () => {
-  const db = await dbPromise;
-  const tx = db.transaction('jate', 'readonly');
+  console.log('GET from the database');
+
+  // Create a connection to the database database and version we want to use.
+  const jateDB = await openDB('jate', 1);
+
+  // Create a new transaction and specify the database and data privileges.
+  const tx = jateDB.transaction('jate', 'readonly');
+
+  // Open up the desired object store.
   const store = tx.objectStore('jate');
-  const allContent = await store.getAll();
-  return allContent.map((item) => item.content); 
+
+  // Use the .getAll() method to get all data in the database.
+  const request = store.getAll();
+
+  // Get confirmation of the request.
+  const result = await request;
+  console.log('result.value', result);
+  return result;
 };
+
 initdb();

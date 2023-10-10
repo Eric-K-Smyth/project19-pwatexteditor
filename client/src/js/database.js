@@ -26,8 +26,10 @@ export const putDb = async (content) => {
     // Access the object store
     const store = transaction.objectStore('jate');
 
-    // Use the put method to store the content directly (as a string)
-    const key = await store.put(content);
+    // Use the put method to store the content as an object with an 'id' property
+    const data = { id: null, content }; // 'id' will be auto-generated
+
+    const key = await store.put(data);
 
     console.log(`Content stored with key: ${key}`);
   } catch (error) {
@@ -63,3 +65,4 @@ export const getDb = async () => {
 };
 
 initdb();
+

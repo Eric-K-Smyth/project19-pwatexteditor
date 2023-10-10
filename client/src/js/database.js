@@ -11,6 +11,7 @@ const initdb = async () =>
       console.log('jate database created');
     },
   });
+
 // Define the putDb function to store content
 export const putDb = async (content) => {
   console.log('Storing content in the database');
@@ -25,11 +26,8 @@ export const putDb = async (content) => {
     // Access the object store
     const store = transaction.objectStore('jate');
 
-    // Define the data to be stored
-    const data = { content };
-
-    // Use the put method to store the data
-    const key = await store.put(data);
+    // Use the put method to store the content directly (as a string)
+    const key = await store.put(content);
 
     console.log(`Content stored with key: ${key}`);
   } catch (error) {
@@ -37,26 +35,31 @@ export const putDb = async (content) => {
   }
 };
 
-// Export a function we will use to GET to the database.
+// Export a function to GET data from the database.
 export const getDb = async () => {
   console.log('GET from the database');
 
-  // Create a connection to the database database and version we want to use.
-  const jateDB = await openDB('jate', 1);
+  try {
+    // Create a connection to the database and specify the version to use
+    const jateDB = await openDB('jate', 1);
 
-  // Create a new transaction and specify the database and data privileges.
-  const tx = jateDB.transaction('jate', 'readonly');
+    // Create a new transaction and specify the database and data privileges
+    const tx = jateDB.transaction('jate', 'readonly');
 
-  // Open up the desired object store.
-  const store = tx.objectStore('jate');
+    // Access the object store
+    const store = tx.objectStore('jate');
 
-  // Use the .getAll() method to get all data in the database.
-  const request = store.getAll();
+    // Use the .getAll() method to get all data in the database
+    const request = store.getAll();
 
-  // Get confirmation of the request.
-  const result = await request;
-  console.log('result.value', result);
-  return result;
+    // Get confirmation of the request
+    const result = await request;
+    console.log('result.value', result);
+    return result;
+  } catch (error) {
+    console.error('Error getting data from the database:', error);
+    return null; // Handle the error gracefully
+  }
 };
 
 initdb();
